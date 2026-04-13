@@ -1,0 +1,160 @@
+[gd_scene format=3 uid="uid://dw7pnx2qk4m0b"]
+
+[ext_resource type="Script" uid="uid://ctbbk35e5jcfx" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" uid="uid://diun22pcynoei" path="res://scripts/python_bridge.gd" id="2_pybd"]
+[ext_resource type="PackedScene" uid="uid://bhk5mwny3pdqr" path="res://scenes/stats_hud.tscn" id="3_hud"]
+[ext_resource type="PackedScene" uid="uid://ct3mxrpb8ydkf" path="res://scenes/terminal.tscn" id="4_term"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1"]
+friction = 0.35
+bounce = 0.89
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1"]
+radius = 0.02
+
+[sub_resource type="SphereMesh" id="SphereMesh_1"]
+radius = 0.02
+height = 0.04
+
+[sub_resource type="StandardMaterial3D" id="Mat_ball"]
+albedo_color = Color(1, 0.95, 0.85, 1)
+roughness = 0.6
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_paddle"]
+radius = 0.085
+height = 0.25
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_table"]
+size = Vector3(2.74, 0.05, 1.525)
+
+[sub_resource type="BoxMesh" id="BoxMesh_table"]
+size = Vector3(2.74, 0.05, 1.525)
+
+[sub_resource type="StandardMaterial3D" id="Mat_table"]
+albedo_color = Color(0, 0.4, 0.15, 1)
+roughness = 0.8
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_net"]
+size = Vector3(0.002, 0.1525, 1.525)
+
+[sub_resource type="BoxMesh" id="BoxMesh_net"]
+size = Vector3(0.002, 0.1525, 1.525)
+
+[sub_resource type="StandardMaterial3D" id="Mat_net"]
+transparency = 1
+albedo_color = Color(0.9, 0.9, 0.9, 0.7)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ai"]
+radius = 0.085
+height = 0.25
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ai"]
+radius = 0.085
+height = 0.25
+
+[sub_resource type="StandardMaterial3D" id="Mat_ai_paddle"]
+transparency = 1
+albedo_color = Color(0.2, 0.5, 1, 0.8)
+emission_enabled = true
+emission = Color(0.1, 0.3, 0.8, 1)
+emission_energy_multiplier = 0.5
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_gravity"]
+size = Vector3(6, 6, 6)
+
+[node name="Main" type="Node3D" unique_id=1417090190]
+script = ExtResource("1_main")
+
+[node name="Ball" type="RigidBody3D" parent="." unique_id=263633297 groups=["ball"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0)
+mass = 0.0027
+physics_material_override = SubResource("PhysicsMaterial_1")
+gravity_scale = 0.0
+custom_integrator = true
+angular_damp = 0.05
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ball" unique_id=1551194812]
+shape = SubResource("SphereShape3D_1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ball" unique_id=1803543312]
+mesh = SubResource("SphereMesh_1")
+surface_material_override/0 = SubResource("Mat_ball")
+
+[node name="XROrigin3D" type="XROrigin3D" parent="." unique_id=1598308251]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D" unique_id=1001402588]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
+
+[node name="LeftController" type="XRController3D" parent="XROrigin3D" unique_id=516356278 groups=["paddle"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 1.3, -0.4)
+tracker = &"left_hand"
+pose = &"aim"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/LeftController" unique_id=442651655]
+shape = SubResource("CapsuleShape3D_paddle")
+
+[node name="RightController" type="XRController3D" parent="XROrigin3D" unique_id=1210820653 groups=["paddle"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 1.3, -0.4)
+tracker = &"right_hand"
+pose = &"aim"
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="XROrigin3D/RightController" unique_id=1456556957]
+shape = SubResource("CapsuleShape3D_paddle")
+
+[node name="Table" type="StaticBody3D" parent="." unique_id=313559946 groups=["table"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.735, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Table" unique_id=1720277445]
+shape = SubResource("BoxShape3D_table")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Table" unique_id=1700330752]
+mesh = SubResource("BoxMesh_table")
+surface_material_override/0 = SubResource("Mat_table")
+
+[node name="Net" type="StaticBody3D" parent="Table" unique_id=1266340605 groups=["net"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.10125, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Table/Net" unique_id=561340905]
+shape = SubResource("BoxShape3D_net")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Table/Net" unique_id=8451821]
+mesh = SubResource("BoxMesh_net")
+surface_material_override/0 = SubResource("Mat_net")
+
+[node name="AIPaddle" type="StaticBody3D" parent="." unique_id=1852904804 groups=["ai_paddle"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="AIPaddle" unique_id=1173457432]
+shape = SubResource("CapsuleShape3D_ai")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="AIPaddle" unique_id=371376543]
+mesh = SubResource("CapsuleMesh_ai")
+surface_material_override/0 = SubResource("Mat_ai_paddle")
+
+[node name="StatsHUD" parent="." unique_id=946940107 instance=ExtResource("3_hud")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, -1.1)
+
+[node name="GravityField" type="Area3D" parent="." unique_id=1458328680]
+gravity = 0.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GravityField" unique_id=1776560732]
+shape = SubResource("BoxShape3D_gravity")
+
+[node name="TerminalOverlay" parent="." unique_id=1600233837 instance=ExtResource("4_term")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, -1.2)
+
+[node name="AudioPlayer" type="AudioStreamPlayer3D" parent="." unique_id=1287072648]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+unit_size = 2.0
+max_distance = 8.0
+
+[node name="PythonBridge" type="Node" parent="." unique_id=689951516]
+script = ExtResource("2_pybd")
+
+[connection signal="body_entered" from="Ball" to="." method="_on_ball_collision"]
+[connection signal="button_pressed" from="XROrigin3D/LeftController" to="." method="_on_left_button"]
+[connection signal="input_float_changed" from="XROrigin3D/LeftController" to="." method="_on_left_input_float"]
+[connection signal="button_pressed" from="XROrigin3D/RightController" to="." method="_on_right_button"]
+[connection signal="input_float_changed" from="XROrigin3D/RightController" to="." method="_on_right_input_float"]
+[connection signal="body_entered" from="GravityField" to="." method="_on_gravity_field_entered"]
+[connection signal="analytics_ready" from="PythonBridge" to="." method="_on_analytics_update"]

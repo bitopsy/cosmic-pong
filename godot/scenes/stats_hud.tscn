@@ -1,0 +1,199 @@
+[gd_scene format=3 uid="uid://bhk5mwny3pdqr"]
+
+[ext_resource type="Script" uid="uid://dbwwkglinm4g6" path="res://scripts/stats_hud.gd" id="1_hud"]
+
+[sub_resource type="ViewportTexture" id="VT_live"]
+viewport_path = NodePath("LivePanel/Viewport")
+
+[sub_resource type="StandardMaterial3D" id="Mat_live"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0, 0.03, 0.01, 0.92)
+albedo_texture = SubResource("VT_live")
+emission_enabled = true
+emission = Color(0, 0.4, 0.06, 1)
+emission_energy_multiplier = 0.15
+
+[sub_resource type="QuadMesh" id="QuadMesh_live"]
+size = Vector2(0.52, 0.39)
+
+[sub_resource type="ViewportTexture" id="VT_graph"]
+viewport_path = NodePath("GraphPanel/Viewport")
+
+[sub_resource type="StandardMaterial3D" id="Mat_graph"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0, 0.03, 0.01, 0.92)
+albedo_texture = SubResource("VT_graph")
+emission_enabled = true
+emission = Color(0, 0.4, 0.06, 1)
+emission_energy_multiplier = 0.15
+
+[sub_resource type="QuadMesh" id="QuadMesh_graph"]
+size = Vector2(0.52, 0.39)
+
+[sub_resource type="ViewportTexture" id="VT_physics"]
+viewport_path = NodePath("PhysicsPanel/Viewport")
+
+[sub_resource type="StandardMaterial3D" id="Mat_physics"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0, 0.03, 0.01, 0.92)
+albedo_texture = SubResource("VT_physics")
+emission_enabled = true
+emission = Color(0, 0.4, 0.06, 1)
+emission_energy_multiplier = 0.15
+
+[sub_resource type="QuadMesh" id="QuadMesh_physics"]
+size = Vector2(0.52, 0.39)
+
+[node name="StatsHUD" type="Node3D"]
+script = ExtResource("1_hud")
+
+[node name="LivePanel" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.58, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LivePanel"]
+material_override = SubResource("Mat_live")
+mesh = SubResource("QuadMesh_live")
+
+[node name="Viewport" type="SubViewport" parent="LivePanel"]
+size = Vector2i(512, 384)
+render_target_update_mode = 3
+
+[node name="VBox" type="VBoxContainer" parent="LivePanel/Viewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 5
+
+[node name="Speed" type="RichTextLabel" parent="LivePanel/Viewport/VBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0, 1, 0.2, 1)
+theme_override_font_sizes/normal_font_size = 13
+bbcode_enabled = true
+text = "[color=#00ff33]SPEED[/color]  v = [b]0.00 m/s[/b]  (0.0 km/h)
+  max = [color=#ffcc00]0.00 m/s[/color]"
+
+[node name="Spin" type="RichTextLabel" parent="LivePanel/Viewport/VBox"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 1, 0.2, 1)
+theme_override_font_sizes/normal_font_size = 13
+bbcode_enabled = true
+text = "[color=#00ccff]SPIN[/color]   ω = [b]0 rpm[/b]  (0.00 rad/s)
+  max = [color=#ffcc00]0 rpm[/color]"
+
+[node name="KineticE" type="RichTextLabel" parent="LivePanel/Viewport/VBox"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 1, 0.2, 1)
+theme_override_font_sizes/normal_font_size = 13
+bbcode_enabled = true
+text = "[color=#ff6633]KE[/color]     E = [b]0.00000 J[/b]
+  p = 0.000000 kg·m/s"
+
+[node name="Magnus" type="RichTextLabel" parent="LivePanel/Viewport/VBox"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 1, 0.2, 1)
+theme_override_font_sizes/normal_font_size = 13
+bbcode_enabled = true
+text = "[color=#00ccff]MAGNUS[/color]  Fm = [b]0.00000 N[/b]"
+
+[node name="Drag" type="RichTextLabel" parent="LivePanel/Viewport/VBox"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 1, 0.2, 1)
+theme_override_font_sizes/normal_font_size = 13
+bbcode_enabled = true
+text = "[color=#00ccff]DRAG[/color]    Fd = [b]0.00000 N[/b]"
+
+[node name="Scores" type="RichTextLabel" parent="LivePanel/Viewport/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0, 1, 0.2, 1)
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "[center][color=#00ff33][b]0[/b][/color] — [color=#00ccff][b]0[/b][/color][/center]"
+
+[node name="Rally" type="RichTextLabel" parent="LivePanel/Viewport/VBox"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 0.4, 0.1, 1)
+theme_override_font_sizes/normal_font_size = 11
+bbcode_enabled = true
+text = "Rally  [b]0[/b] hits | Total dist: 0.0 m"
+
+[node name="GraphPanel" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GraphPanel"]
+material_override = SubResource("Mat_graph")
+mesh = SubResource("QuadMesh_graph")
+
+[node name="Viewport" type="SubViewport" parent="GraphPanel"]
+size = Vector2i(512, 384)
+render_target_update_mode = 3
+
+[node name="Graphs" type="VBoxContainer" parent="GraphPanel/Viewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="SpeedGraph" type="TextureRect" parent="GraphPanel/Viewport/Graphs"]
+custom_minimum_size = Vector2(512, 88)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SpinGraph" type="TextureRect" parent="GraphPanel/Viewport/Graphs"]
+custom_minimum_size = Vector2(512, 88)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="KEGraph" type="TextureRect" parent="GraphPanel/Viewport/Graphs"]
+custom_minimum_size = Vector2(512, 88)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ReactGraph" type="TextureRect" parent="GraphPanel/Viewport/Graphs"]
+custom_minimum_size = Vector2(512, 88)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PhysicsPanel" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.58, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PhysicsPanel"]
+material_override = SubResource("Mat_physics")
+mesh = SubResource("QuadMesh_physics")
+
+[node name="Viewport" type="SubViewport" parent="PhysicsPanel"]
+size = Vector2i(512, 384)
+render_target_update_mode = 3
+
+[node name="PhysicsRef" type="RichTextLabel" parent="PhysicsPanel/Viewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0, 1, 0.2, 1)
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true

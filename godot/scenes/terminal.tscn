@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://ct3mxrpb8ydkf"]
+
+[ext_resource type="Script" uid="uid://cxpgmnovgbbaf" path="res://scripts/terminal_overlay.gd" id="1_ovrl"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_term"]
+viewport_path = NodePath("Viewport")
+
+[sub_resource type="StandardMaterial3D" id="Mat_term"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0, 0.03, 0.01, 0.92)
+albedo_texture = SubResource("ViewportTexture_term")
+emission_enabled = true
+emission = Color(0, 0.3, 0.05, 1)
+emission_energy_multiplier = 0.15
+
+[sub_resource type="QuadMesh" id="QuadMesh_term"]
+size = Vector2(0.7, 0.35)
+
+[node name="TerminalOverlay" type="Node3D"]
+script = ExtResource("1_ovrl")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("Mat_term")
+mesh = SubResource("QuadMesh_term")
+
+[node name="Viewport" type="SubViewport" parent="."]
+size = Vector2i(512, 256)
+render_target_update_mode = 3
+
+[node name="VBox" type="VBoxContainer" parent="Viewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="LiveReadout" type="RichTextLabel" parent="Viewport/VBox"]
+custom_minimum_size = Vector2(512, 78)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0, 1, 0.2, 1)
+theme_override_font_sizes/normal_font_size = 11
+bbcode_enabled = true
+scroll_active = false
+
+[node name="LogScroll" type="RichTextLabel" parent="Viewport/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0, 1, 0.2, 1)
+theme_override_font_sizes/normal_font_size = 11
+bbcode_enabled = true
+scroll_following = true
+
+[node name="CursorTimer" type="Timer" parent="Viewport"]
+wait_time = 0.5
+autostart = true
+
+[connection signal="timeout" from="Viewport/CursorTimer" to="." method="_blink_cursor"]

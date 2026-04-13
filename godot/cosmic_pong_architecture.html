@@ -1,0 +1,276 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:transparent;}
+  .root{font-family:'Share Tech Mono',monospace;padding:16px 0;color:#00ff33;}
+  .title{text-align:center;font-size:13px;color:#00ff33;letter-spacing:2px;margin-bottom:14px;opacity:.85;}
+  .arch{display:grid;grid-template-columns:1fr 40px 1fr 40px 1fr;gap:0;align-items:center;margin-bottom:18px;}
+  .col{display:flex;flex-direction:column;gap:8px;}
+  .box{border:1px solid #004411;background:#001408;border-radius:6px;padding:8px 10px;font-size:11px;cursor:pointer;transition:border-color .2s,background .2s;position:relative;}
+  .box:hover{border-color:#00ff33;background:#002210;}
+  .box .label{color:#00ff33;font-size:11px;font-weight:bold;}
+  .box .sub{color:#006622;font-size:9px;margin-top:3px;line-height:1.4;}
+  .box.highlight{border-color:#ffcc00;background:#0a0800;}
+  .box.highlight .label{color:#ffcc00;}
+  .arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+  .arr-line{width:2px;height:28px;background:#004411;}
+  .arr-h{display:flex;align-items:center;justify-content:center;color:#004411;font-size:16px;}
+  .arr-lbl{font-size:8px;color:#003311;text-align:center;line-height:1.2;max-width:36px;}
+  .section-head{font-size:9px;color:#003311;text-align:center;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase;}
+  .physics-box{border:1px solid #003322;background:#000c05;border-radius:6px;padding:10px 14px;font-size:10px;margin-bottom:12px;}
+  .physics-box .row{display:flex;justify-content:space-between;align-items:baseline;padding:2px 0;border-bottom:1px solid #001a08;}
+  .physics-box .row:last-child{border-bottom:none;}
+  .eq-name{color:#00ddff;font-size:9px;}
+  .eq-val{color:#ffcc00;font-size:9px;}
+  .eq-formula{color:#006622;font-size:8px;}
+  .terminal{border:1px solid #003311;background:#000905;border-radius:6px;padding:8px 12px;font-size:9.5px;line-height:1.6;min-height:72px;overflow:hidden;}
+  .t-green{color:#00ff33;}
+  .t-cyan{color:#00ddff;}
+  .t-amber{color:#ffcc00;}
+  .t-dim{color:#004411;}
+  .t-red{color:#ff3322;}
+  .cursor{display:inline-block;width:7px;height:12px;background:#00ff33;animation:blink .6s step-end infinite;vertical-align:bottom;}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  .gravity-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+  .g-pill{border:1px solid #003311;border-radius:12px;padding:3px 10px;font-size:9px;cursor:pointer;transition:all .15s;color:#006622;}
+  .g-pill.active{border-color:#ffcc00;color:#ffcc00;background:#0a0800;}
+  .g-pill:hover{border-color:#00ff33;color:#00ff33;}
+  .stat-row{display:flex;gap:8px;margin-bottom:12px;}
+  .stat-card{flex:1;border:1px solid #003311;background:#000c05;border-radius:6px;padding:8px;text-align:center;}
+  .stat-card .sv{color:#00ff33;font-size:18px;font-weight:bold;}
+  .stat-card .sl{color:#003311;font-size:8px;margin-top:2px;text-transform:uppercase;letter-spacing:.5px;}
+  .mini-graph{height:50px;width:100%;position:relative;overflow:hidden;}
+  canvas.mg{width:100%;height:50px;display:block;}
+  .btn-row{display:flex;gap:8px;margin-top:10px;}
+  .btn{border:1px solid #004411;background:#001408;border-radius:4px;padding:5px 12px;font-size:10px;color:#00ff33;cursor:pointer;font-family:inherit;transition:all .15s;}
+  .btn:hover{border-color:#00ff33;background:#002210;}
+  .btn:active{transform:scale(.97);}
+  .divider{border:none;border-top:1px solid #003311;margin:12px 0;}
+  .panel-head{font-size:10px;color:#006622;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+</style>
+
+<div class="root">
+  <div class="title">◈ COSMIC MATRIX PONG — SYSTEM ARCHITECTURE ◈</div>
+
+  <!-- Architecture columns -->
+  <div class="arch">
+    <!-- Col 1: Godot/VR -->
+    <div class="col">
+      <div class="section-head">Godot 4 Engine</div>
+      <div class="box" onclick="showInfo('xr')">
+        <div class="label">Pico 4 / OpenXR</div>
+        <div class="sub">90Hz stereo · 6DoF · hand tracking</div>
+      </div>
+      <div class="box" onclick="showInfo('physics')">
+        <div class="label">Physics Engine</div>
+        <div class="sub">Drag · Magnus · COR · custom integrator</div>
+      </div>
+      <div class="box highlight" onclick="showInfo('haptics')">
+        <div class="label">Haptic Motor</div>
+        <div class="sub">Amp ∝ KE · 80–180 Hz · per-hand</div>
+      </div>
+      <div class="box" onclick="showInfo('shader')">
+        <div class="label">Matrix Shader</div>
+        <div class="sub">CRT scanlines · phosphor glow · flicker</div>
+      </div>
+    </div>
+
+    <!-- Arrow L→M -->
+    <div class="arrow">
+      <div class="arr-h">⟶</div>
+      <div class="arr-lbl">TCP 8765 JSON</div>
+    </div>
+
+    <!-- Col 2: Bridge + HUD -->
+    <div class="col">
+      <div class="section-head">Bridge + Display</div>
+      <div class="box" onclick="showInfo('terminal')">
+        <div class="label">Terminal Overlay</div>
+        <div class="sub">Matrix green · live telemetry · syntax color</div>
+      </div>
+      <div class="box" onclick="showInfo('hud')">
+        <div class="label">Stats HUD (3 panels)</div>
+        <div class="sub">Live · Graphs · Physics ref</div>
+      </div>
+      <div class="box" onclick="showInfo('bridge')">
+        <div class="label">Python Bridge</div>
+        <div class="sub">StreamPeerTCP · async queue · process launch</div>
+      </div>
+    </div>
+
+    <!-- Arrow M→R -->
+    <div class="arrow">
+      <div class="arr-h">⟶</div>
+      <div class="arr-lbl">enriched analytics</div>
+    </div>
+
+    <!-- Col 3: Python -->
+    <div class="col">
+      <div class="section-head">Python Analytics</div>
+      <div class="box" onclick="showInfo('server')">
+        <div class="label">Analytics Server</div>
+        <div class="sub">asyncio TCP · per-hit physics · rolling stats</div>
+      </div>
+      <div class="box" onclick="showInfo('analyzer')">
+        <div class="label">Session Analyzer</div>
+        <div class="sub">12-panel matplotlib · KDE · Savitzky-Golay</div>
+      </div>
+      <div class="box" onclick="showInfo('tests')">
+        <div class="label">Physics Tests</div>
+        <div class="sub">16 equations verified · unittest · CI-ready</div>
+      </div>
+      <div class="box" onclick="showInfo('csv')">
+        <div class="label">CSV Export</div>
+        <div class="sub">14 columns · per-hit · importable to R/pandas</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Info panel -->
+  <div id="info-panel" class="terminal" style="margin-bottom:12px;min-height:54px;">
+    <span class="t-dim">Click any module above to see details...</span>
+    <span class="cursor"></span>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Gravity mode selector -->
+  <div class="panel-head">⊕ Gravity Mode Simulator</div>
+  <div class="gravity-row" id="gravity-row">
+    <div class="g-pill active" data-g="9.81" onclick="setGravity(this,'Earth','9.81')">Earth 9.81</div>
+    <div class="g-pill" data-g="3.72" onclick="setGravity(this,'Mars','3.72')">Mars 3.72</div>
+    <div class="g-pill" data-g="1.62" onclick="setGravity(this,'Moon','1.62')">Moon 1.62</div>
+    <div class="g-pill" data-g="24.79" onclick="setGravity(this,'Jupiter','24.79')">Jupiter 24.79</div>
+    <div class="g-pill" data-g="0" onclick="setGravity(this,'Zero-G','0')">Zero-G 0.00</div>
+    <div class="g-pill" data-g="dyn" onclick="setGravity(this,'Orbital','dyn')">Orbital ∿</div>
+  </div>
+
+  <!-- Live physics cards -->
+  <div class="stat-row" id="stat-row">
+    <div class="stat-card"><div class="sv" id="sv-fd">0.0382</div><div class="sl">F_drag (N)</div></div>
+    <div class="stat-card"><div class="sv" id="sv-ke">0.1350</div><div class="sl">KE at 10m/s (J)</div></div>
+    <div class="stat-card"><div class="sv" id="sv-re">28619</div><div class="sl">Reynolds #</div></div>
+    <div class="stat-card"><div class="sv" id="sv-t">—</div><div class="sl">Turbulent?</div></div>
+    <div class="stat-card"><div class="sv" id="sv-g">9.81</div><div class="sl">g (m/s²)</div></div>
+  </div>
+
+  <!-- Physics equations reference -->
+  <hr class="divider">
+  <div class="panel-head">∑ Physics Equations (All Tests Passing ✓)</div>
+  <div class="physics-box">
+    <div class="row"><span class="eq-name">Aerodynamic drag</span><span class="eq-formula">F_d = ½ρC_d·A·v²</span><span class="eq-val">0.0382 N @ 10m/s</span></div>
+    <div class="row"><span class="eq-name">Magnus force</span><span class="eq-formula">F_m = k(ω × v)</span><span class="eq-val">k = 1.5×10⁻⁴</span></div>
+    <div class="row"><span class="eq-name">Kinetic energy</span><span class="eq-formula">E_k = ½mv²</span><span class="eq-val">0.135 J @ 10m/s</span></div>
+    <div class="row"><span class="eq-name">Reynolds number</span><span class="eq-formula">Re = ρvD/μ</span><span class="eq-val">28619 @ 10m/s</span></div>
+    <div class="row"><span class="eq-name">Turbulence onset</span><span class="eq-formula">Re > 4×10⁴</span><span class="eq-val">v_crit ≈ 14.0 m/s</span></div>
+    <div class="row"><span class="eq-name">Bounce height</span><span class="eq-formula">h = e²·h₀</span><span class="eq-val">e = 0.89 (ITTF)</span></div>
+    <div class="row"><span class="eq-name">Momentum</span><span class="eq-formula">p = mv</span><span class="eq-val">0.027 kg·m/s @ 10m/s</span></div>
+    <div class="row"><span class="eq-name">Haptic amplitude</span><span class="eq-formula">A_h = clamp(KE/0.5, 0.25, 0.9)</span><span class="eq-val">80–180 Hz</span></div>
+  </div>
+
+  <!-- Terminal log simulation -->
+  <div class="panel-head">⌨ Live Terminal Feed (simulated)</div>
+  <div class="terminal" id="terminal-log" style="height:110px;overflow:hidden;"></div>
+
+  <div class="btn-row">
+    <button class="btn" onclick="simulateHit()">⚡ Simulate Hit</button>
+    <button class="btn" onclick="simulateBounce()">↩ Simulate Bounce</button>
+    <button class="btn" onclick="clearLog()">⌫ Clear Log</button>
+  </div>
+</div>
+
+<script>
+const INFO = {
+  xr: '<span class="t-cyan">[XR]</span> Pico 4 via OpenXR 1.0 · 2×2160×2160 px · 90 Hz · IPD auto-adjust\nHands tracked as XRController3D with pose data · 6DoF room-scale',
+  physics: '<span class="t-cyan">[PHYSICS]</span> Custom integrator: _integrate_forces() called at 120 Hz\nApplies: gravity (scene) + aerodynamic drag + Magnus + orbital fields\nBall: m=2.7g · r=20mm · e=0.89 · Cd=0.47 · ITTF regulation spec',
+  haptics: '<span class="t-amber">[HAPTIC]</span> tracker.trigger_haptic_pulse("haptic", freq, amp, dur, 0.0)\nSoft hit: amp=0.25 @ 80 Hz · Power shot: amp=0.90 @ 180 Hz\nAmplitude scales continuously with sqrt(KE) — feels proportional',
+  shader: '<span class="t-green">[SHADER]</span> Spatial unshaded + blend_add · CRT barrel distortion k=0.08\nScanlines 180 lines · Phosphor glow exp(-d·6) · Chromatic aberration 0.002\nFlicker: sin(t·17.3)·sin(t·31.7) — irregular, non-periodic',
+  terminal: '<span class="t-green">[TERMINAL]</span> RichTextLabel BBCode · scroll_following=true · 40 line ring buffer\nSyntax coloring: HIT=green · BOUNCE=cyan · WARN=amber · ERROR=red\nTimestamp format: [XXXXXXX.XXX] · cursor blink at 0.5 Hz',
+  hud: '<span class="t-cyan">[HUD]</span> 3 SubViewport panels floating in XR space at fixed transforms\nPanel 1: Live v/ω/KE/forces · Panel 2: Rolling graphs (Image drawn)\nPanel 3: Physics reference equations · All use matrix green theme',
+  bridge: '<span class="t-amber">[BRIDGE]</span> StreamPeerTCP non-blocking · JSON lines protocol (newline delimited)\nGodot → Python: hit events · Python → Godot: enriched analytics\nPython process launched via OS.create_process() at game start',
+  server: '<span class="t-cyan">[SERVER]</span> asyncio.start_server · per-hit: Re, turbulence, drag verified\nRolling stats: mean/std/p95 updated on every hit · sends back JSON\nCSV+graphs generated on demand (right menu button)',
+  analyzer: '<span class="t-green">[ANALYZER]</span> 12-panel matplotlib figure · 160 DPI · matrix green theme\nIncludes: KDE speed distribution · Savitzky-Golay smoothing · Pearson r\nBoxplot L/R hand · Cumulative KE · Coaching insights text panel',
+  tests: '<span class="t-amber">[TESTS]</span> 16 unit tests · all passing ✓ · run: python3 test_physics.py\nVerified: drag/Magnus/Re/KE/momentum/bounce/ITTF spec/unit conversions\nCaught & fixed: drag expected value, Re threshold, Magnus sign',
+  csv: '<span class="t-green">[CSV]</span> 14 columns per hit: v/ω/KE/p/P/Re/turbulent/Fd/Fm/Δt/hand\nLoadable with pandas, R, Excel, MATLAB\nPath: python/sessions/session_TIMESTAMP.csv',
+};
+
+function showInfo(key) {
+  document.getElementById('info-panel').innerHTML =
+    '<span class="t-dim">›</span> ' + INFO[key] + '<span class="cursor"></span>';
+}
+
+let currentG = 9.81;
+function setGravity(el, name, g) {
+  document.querySelectorAll('.g-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  currentG = g === 'dyn' ? 9.81 : parseFloat(g);
+  updatePhysicsCards(10.0);
+  addLog(`<span class="t-amber">[GRAVITY]</span> Mode: ${name.toUpperCase()} | g=${currentG.toFixed(2)} m/s²`);
+}
+
+function updatePhysicsCards(v) {
+  const rho=1.293, Cd=0.47, A=Math.PI*0.02*0.02, mu=1.81e-5, D=0.04, m=0.0027;
+  const fd = 0.5*rho*Cd*A*v*v;
+  const ke = 0.5*m*v*v;
+  const re = rho*v*D/mu;
+  const turb = re > 4e4;
+  document.getElementById('sv-fd').textContent = fd.toFixed(4);
+  document.getElementById('sv-ke').textContent = ke.toFixed(4);
+  document.getElementById('sv-re').textContent = Math.round(re).toLocaleString();
+  document.getElementById('sv-t').textContent = turb ? 'YES' : 'no';
+  document.getElementById('sv-t').style.color = turb ? '#ff3322' : '#00ff33';
+  document.getElementById('sv-g').textContent = currentG.toFixed(2);
+}
+
+let hitCount = 0;
+const logEl = document.getElementById('terminal-log');
+let logLines = [];
+
+function addLog(line) {
+  const ts = ((Date.now() % 100000) / 1000).toFixed(3).padStart(7,'0');
+  logLines.push(`<span class="t-dim">[${ts}]</span> ${line}`);
+  if (logLines.length > 14) logLines.shift();
+  logEl.innerHTML = logLines.join('<br>') + '<br><span class="cursor"></span>';
+}
+
+function simulateHit() {
+  hitCount++;
+  const v    = (8 + Math.random()*18).toFixed(2);
+  const rpm  = Math.round(200 + Math.random()*2000);
+  const ke   = (0.5*0.0027*v*v).toFixed(5);
+  const fm   = (1.5e-4 * (rpm/9.549) * parseFloat(v)).toFixed(5);
+  const hand = Math.random() > 0.5 ? 'L' : 'R';
+  updatePhysicsCards(parseFloat(v));
+  addLog(`<span class="t-green">[HIT #${hitCount}]</span> v=${v}m/s | ω=${rpm}rpm | KE=${ke}J | Fm=${fm}N | ${hand}`);
+}
+
+function simulateBounce() {
+  const h0  = (0.2 + Math.random()*0.4).toFixed(3);
+  const hb  = (h0 * 0.89 * 0.89).toFixed(3);
+  const fd  = (0.5*1.293*0.47*Math.PI*0.0004*(2*9.81*h0)).toFixed(5);
+  addLog(`<span class="t-cyan">[BOUNCE]</span> h₀=${h0}m → h₁=${hb}m (e²) | Fd=${fd}N`);
+}
+
+function clearLog() {
+  logLines = [];
+  logEl.innerHTML = '<span class="t-dim">Log cleared.</span><span class="cursor"></span>';
+}
+
+// Boot sequence
+const boot = [
+  '<span class="t-dim">[BOOT] Initializing OpenXR runtime..........OK</span>',
+  '<span class="t-dim">[BOOT] Loading physics constants (ITTF).....OK</span>',
+  '<span class="t-dim">[BOOT] Starting Python analytics bridge.....OK</span>',
+  '<span class="t-dim">[BOOT] Calibrating haptic motors.............OK</span>',
+  '<span class="t-green">[READY] Cosmic Matrix Pong — ONLINE ✓</span>',
+];
+let bi = 0;
+function bootStep() {
+  if (bi < boot.length) { addLog(boot[bi++]); setTimeout(bootStep, 220); }
+}
+bootStep();
+updatePhysicsCards(10.0);
+</script>
